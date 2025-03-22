@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [ ! -f "vendor/autoload.php" ]; then
+    echo "Installing Composer dependencies..."
     composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
 fi
 
@@ -16,15 +17,26 @@ if [ ! -f ".env" ]; then
         echo "Copying .env.prod ... "
         cp .env.prod .env
     ;;
+    "staging")
+        echo "Copying .env.dev ... "
+        cp .env.staging .env
+    ;;
     esac
 else
-    echo "env file exists."
+    echo ".env file already exists."
 fi
 
 # php artisan migrate
+echo "Running Laravel Artisan commands..."
 php artisan clear
 php artisan optimize:clear
-php artisan migrate
+
+# Wait for the database to be ready before migrating
+echo "Waiting for database to be ready..."
+until php artisan migrate --force; do
+    echo "Database is not ready. Retrying in 5 seconds..."
+    sleep 5
+done
 
 # Fix files ownership.
 chown -R www-data .
