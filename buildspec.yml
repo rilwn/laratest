@@ -17,7 +17,7 @@ phases:
     commands:
       - echo 'Started building ...'
       # Dynamically copy the correct .env file based on the environment
-      - if [ "$APP_ENV" == "staging" ]; then cp .env.staging .env; else cp .env.prod .env; fi
+      - if [ "$APP_ENV" = "staging" ]; then cp .env.staging .env; else cp .env.prod .env; fi
       - docker build -t $IMAGE .
       - docker tag $IMAGE:$IMAGE_TAG $REPOSITORY/$IMAGE:$IMAGE_TAG
 
