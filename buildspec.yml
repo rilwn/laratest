@@ -16,7 +16,7 @@ phases:
     on-failure: ABORT
     commands:
       - echo 'Started building ...'
-      - echo "APP_ENV is set to: $APP_ENV"
+      - echo 'APP_ENV is set to $APP_ENV'
       - |
         if [ "$APP_ENV" = "staging" ]; then
           cp .env.staging .env;
